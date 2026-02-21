@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using NotesApi.Data;
 
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Register AppDbContext with PostgreSQL
