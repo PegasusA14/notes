@@ -4,15 +4,18 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NotesApi.Data;
 using NotesApi.Dtos;
+using NotesApi.DTOs;
 using NotesApi.Models;
+using NotesApi.Services;
 
 [ApiController]
 [Route("auth")]
 public class AuthController: ControllerBase
 {
     private readonly AppDbContext _db;
+    private readonly JwtService _jwt;
 
-    public AuthController(AppDbContext db) => _db = db;
+    public AuthController(AppDbContext db, JwtService jwt) => (_db, _jwt) = (db, jwt);
 
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterDto dto)
@@ -36,5 +39,32 @@ public class AuthController: ControllerBase
         await _db.SaveChangesAsync();
 
         return Ok(new {message = "User created successfully"});
+    }
+
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] LoginDto dto)
+    {
+        var user= await _db.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
+        if(user == null)
+        {
+            return BadRequest(new {message = "User not found"});
+        }
+
+        var passwordMatch = BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash);
+        if(!passwordMatch)
+        {
+            return BadRequest(new {message = "Invalid password"});
+        }
+
+        // Generate token
+        var token = _jwt.GenerateToken(user);
+
+        return Ok(new AuthResponseDto
+        {
+            Token = token,
+            Name = user.Name,
+            Email = user.Email
+        });
+        
     }
 }

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using NotesApi.Data;
+using NotesApi.Services;
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
@@ -10,6 +11,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
 
 builder.Services.AddControllers();
+
+builder.Services.AddScoped<JwtService>();
 
 var app = builder.Build();
 
