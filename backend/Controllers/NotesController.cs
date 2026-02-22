@@ -40,10 +40,16 @@ public class NotesController : ControllerBase
 
     // GET /notes
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] int? folderId)
     {
-        var notes = await _db.Notes
-            .Where(n => n.UserId == GetUserId())
+        var query = _db.Notes.Where(n => n.UserId == GetUserId());
+
+        if (folderId.HasValue)
+        {
+            query = query.Where(n => n.FolderId == folderId.Value);
+        }
+
+        var notes = await query
             .Include(n => n.Folder)
             .OrderByDescending(n => n.CreatedAt)
             .ToListAsync();

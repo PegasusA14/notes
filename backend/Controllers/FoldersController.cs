@@ -39,6 +39,33 @@ public class FoldersController : ControllerBase
         }));
     }
 
+    // GET /folders/{id}/notes
+    [HttpGet("{id}/notes")]
+    public async Task<IActionResult> GetNotesByFolder(int id)
+    {
+        var folder = await _db.Folders.FirstOrDefaultAsync(f => f.Id == id && f.UserId == GetUserId());
+        if (folder is null)
+            return NotFound(new { message = "Folder not found" });
+
+        var notes = await _db.Notes
+            .Where(n => n.FolderId == id && n.UserId == GetUserId())
+            .Include(n => n.Folder)
+            .OrderByDescending(n => n.CreatedAt)
+            .ToListAsync();
+
+        // NoteResponseDto mapping inline for simplicity, or we can just return it.
+        return Ok(notes.Select(n => new NoteResponseDto
+        {
+            Id = n.Id,
+            Title = n.Title,
+            Content = n.Content,
+            FolderId = n.FolderId,
+            FolderName = n.Folder?.Name,
+            CreatedAt = n.CreatedAt,
+            UpdatedAt = n.UpdatedAt
+        }));
+    }
+
     // POST /folders
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] FolderDto dto)

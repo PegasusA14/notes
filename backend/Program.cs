@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using NotesApi.Data;
-using NotesApi.Services;
 using NotesApi.Extensions;
+using NotesApi.Services;
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
@@ -13,12 +13,17 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddControllers();
 
+builder.Services.AddFrontendCors();
+
 builder.Services.AddJwtAuthentication(builder.Configuration);
 
 builder.Services.AddScoped<JwtService>();
 
 var app = builder.Build();
 
+app.UseCors("FrontendCorsPolicy");
+
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
