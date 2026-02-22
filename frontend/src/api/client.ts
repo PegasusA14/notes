@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useAuthStore } from '../store/authStore';
 
 export const apiClient = axios.create({
-    baseURL: 'http://localhost:5222', // Standard backend dev port, adjust if backend runs on different port
+    baseURL: 'http://localhost:5024', // Standard backend dev port, adjust if backend runs on different port
 });
 
 // Request interceptor to attach token

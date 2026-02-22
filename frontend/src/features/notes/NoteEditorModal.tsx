@@ -33,7 +33,6 @@ export const NoteEditorModal = ({ noteToEdit, onClose }: NoteEditorModalProps) =
             } else {
                 setTitle('');
                 setContent('');
-                // Maybe default to selected folder if any
                 setFolderId(useUiStore.getState().selectedFolderId);
             }
         }
@@ -84,28 +83,28 @@ export const NoteEditorModal = ({ noteToEdit, onClose }: NoteEditorModalProps) =
             onOpenChange={handleClose}
             title={noteToEdit ? 'Edit Note' : 'New Note'}
         >
-            <form onSubmit={handleSubmit} className="mt-4 flex flex-col space-y-4">
+            <form onSubmit={handleSubmit} className="mt-6 flex flex-col space-y-5">
                 <Input
                     placeholder="Note title"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     required
                     autoFocus={!noteToEdit}
-                    className="text-lg font-semibold"
+                    className="text-xl font-bold border-0 bg-zinc-50 focus-visible:ring-1 focus-visible:ring-zinc-300 px-4 py-3 placeholder:text-zinc-400"
                 />
 
                 <div className="flex flex-col">
                     <textarea
                         placeholder="Write your note here..."
-                        className="h-64 resize-none rounded-md border border-zinc-800 bg-zinc-900 p-3 text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        className="h-72 resize-none rounded-xl border-0 bg-zinc-50 p-4 text-base text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-300 transition-shadow leading-relaxed"
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
                     />
                 </div>
 
-                <div className="flex items-center justify-between pt-2">
+                <div className="flex items-center justify-between pt-4 border-t border-zinc-100">
                     <select
-                        className="rounded-md border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm text-zinc-300 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 hover:bg-zinc-50 transition-colors"
                         value={folderId || ''}
                         onChange={(e) => setFolderId(e.target.value ? Number(e.target.value) : null)}
                     >
@@ -117,12 +116,12 @@ export const NoteEditorModal = ({ noteToEdit, onClose }: NoteEditorModalProps) =
                         ))}
                     </select>
 
-                    <div className="flex space-x-2">
+                    <div className="flex space-x-3">
                         <Button type="button" variant="ghost" onClick={() => handleClose(false)}>
                             Cancel
                         </Button>
-                        <Button type="submit" isLoading={isPending}>
-                            {noteToEdit ? 'Save' : 'Create'}
+                        <Button type="submit" isLoading={isPending} className="px-6 rounded-full shadow-sm hover:shadow-md transition-shadow">
+                            {noteToEdit ? 'Save Changes' : 'Create Note'}
                         </Button>
                     </div>
                 </div>

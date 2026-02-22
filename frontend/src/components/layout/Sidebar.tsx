@@ -6,7 +6,6 @@ import { Badge } from '../ui/Badge';
 import { cn } from '../../lib/utils';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
 import toast from 'react-hot-toast';
-// import { useNotes } from '../../features/notes/api';
 
 interface SidebarProps {
     isOpen: boolean;
@@ -23,7 +22,6 @@ export const Sidebar = ({ isOpen, onClose, totalNotesCount = 0 }: SidebarProps) 
 
     const [isCreating, setIsCreating] = useState(false);
     const [newFolderName, setNewFolderName] = useState('');
-
     const [folderToDelete, setFolderToDelete] = useState<number | null>(null);
 
     const handleCreate = (e: React.KeyboardEvent | React.FocusEvent) => {
@@ -59,34 +57,33 @@ export const Sidebar = ({ isOpen, onClose, totalNotesCount = 0 }: SidebarProps) 
 
     return (
         <>
-            {/* Mobile overlay */}
             {isOpen && (
                 <div
-                    className="fixed inset-0 z-40 bg-black/80 backdrop-blur-sm lg:hidden"
+                    className="fixed inset-0 z-40 bg-zinc-900/50 backdrop-blur-sm lg:hidden"
                     onClick={onClose}
                 />
             )}
 
             <aside className={cn(
-                "fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r border-zinc-800 bg-zinc-950 transition-transform duration-300 lg:static lg:translate-x-0",
+                "fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r border-zinc-200 bg-white transition-transform duration-300 lg:static lg:translate-x-0 shadow-sm",
                 isOpen ? "translate-x-0" : "-translate-x-full"
             )}>
-                <div className="flex h-16 items-center justify-between px-4 lg:hidden">
-                    <span className="font-semibold text-zinc-100">Menu</span>
-                    <button onClick={onClose} className="rounded-md p-2 text-zinc-400 hover:bg-zinc-800 hover:text-white">
+                <div className="flex h-16 items-center justify-between px-4 lg:hidden border-b border-zinc-100">
+                    <span className="font-semibold text-zinc-900">Menu</span>
+                    <button onClick={onClose} className="rounded-md p-2 text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900">
                         <X className="h-5 w-5" />
                     </button>
                 </div>
 
-                <div className="flex-1 overflow-y-auto py-4">
-                    <nav className="space-y-1 px-3">
+                <div className="flex-1 overflow-y-auto py-6">
+                    <nav className="space-y-1 px-4">
                         <button
                             onClick={() => { setSelectedFolderId(null); onClose(); }}
                             className={cn(
-                                "flex w-full items-center justify-between rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                                "flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
                                 selectedFolderId === null
-                                    ? "bg-primary-600 outline-none text-white"
-                                    : "text-zinc-300 hover:bg-zinc-800 hover:text-white"
+                                    ? "bg-zinc-900 text-white shadow-md outline-none"
+                                    : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900"
                             )}
                         >
                             <div className="flex items-center gap-3">
@@ -99,38 +96,38 @@ export const Sidebar = ({ isOpen, onClose, totalNotesCount = 0 }: SidebarProps) 
                         </button>
                     </nav>
 
-                    <div className="mt-8 px-3">
-                        <h3 className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-zinc-500">
+                    <div className="mt-8 px-4">
+                        <h3 className="mb-3 px-3 text-xs font-bold uppercase tracking-wider text-zinc-400">
                             Folders
                         </h3>
                         <div className="space-y-1">
                             {isLoading ? (
-                                <div className="px-3 py-2 text-sm text-zinc-500">Loading...</div>
+                                <div className="px-3 py-2 text-sm text-zinc-400 animate-pulse">Loading folders...</div>
                             ) : folders?.length === 0 ? (
-                                <div className="px-3 py-2 text-sm text-zinc-500">No folders yet</div>
+                                <div className="px-3 py-2 text-sm text-zinc-400">No folders yet</div>
                             ) : (
                                 folders?.map((folder) => (
                                     <div key={folder.id} className="group relative flex items-center">
                                         <button
                                             onClick={() => { setSelectedFolderId(folder.id); onClose(); }}
                                             className={cn(
-                                                "flex w-full items-center justify-between rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                                                "flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
                                                 selectedFolderId === folder.id
-                                                    ? "bg-primary-600/20 text-primary-400"
-                                                    : "text-zinc-300 hover:bg-zinc-800 hover:text-white"
+                                                    ? "bg-primary-50 text-primary-700 font-semibold"
+                                                    : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900"
                                             )}
                                         >
                                             <div className="flex items-center gap-3 truncate">
                                                 <Folder className="h-4 w-4 flex-shrink-0" />
                                                 <span className="truncate">{folder.name}</span>
                                             </div>
-                                            <Badge variant="secondary" className="ml-2 bg-zinc-800 group-hover:bg-zinc-700">
+                                            <Badge variant="secondary" className="ml-2 group-hover:bg-white group-hover:border-zinc-200">
                                                 {folder.noteCount}
                                             </Badge>
                                         </button>
                                         <button
                                             onClick={(e) => { e.stopPropagation(); setFolderToDelete(folder.id); }}
-                                            className="absolute right-12 hidden rounded p-1 text-zinc-400 hover:bg-red-500/20 hover:text-red-400 group-hover:block"
+                                            className="absolute right-12 hidden rounded p-1 text-zinc-400 hover:bg-red-50 hover:text-red-500 group-hover:block transition-colors"
                                             title="Delete folder"
                                         >
                                             <Trash2 className="h-3 w-3" />
@@ -145,7 +142,7 @@ export const Sidebar = ({ isOpen, onClose, totalNotesCount = 0 }: SidebarProps) 
                                         autoFocus
                                         type="text"
                                         placeholder="Folder name..."
-                                        className="w-full rounded bg-zinc-900 px-2 py-1 text-sm text-zinc-100 outline-none focus:ring-2 focus:ring-primary-500"
+                                        className="w-full rounded-lg border border-primary-200 shadow-sm bg-white px-3 py-1.5 text-sm text-zinc-900 outline-none focus:ring-2 focus:ring-primary-500"
                                         value={newFolderName}
                                         onChange={(e) => setNewFolderName(e.target.value)}
                                         onKeyDown={handleCreate}
@@ -156,7 +153,7 @@ export const Sidebar = ({ isOpen, onClose, totalNotesCount = 0 }: SidebarProps) 
                             ) : (
                                 <button
                                     onClick={() => setIsCreating(true)}
-                                    className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-zinc-100 mt-2"
+                                    className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-900 mt-2"
                                 >
                                     <Plus className="h-4 w-4" />
                                     New Folder

@@ -60,17 +60,17 @@ export const NoteGrid = () => {
     return (
         <div className="flex flex-col space-y-6">
             <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold tracking-tight text-white">{folderName}</h2>
-                <Button onClick={handleCreateNew} className="hidden sm:flex" variant="primary">
+                <h2 className="text-3xl font-extrabold tracking-tight text-zinc-900">{folderName}</h2>
+                <Button onClick={handleCreateNew} className="hidden sm:flex shadow-sm hover:shadow" variant="primary">
                     <Plus className="mr-2 h-4 w-4" />
                     New Note
                 </Button>
             </div>
 
             {isLoading ? (
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                     {[1, 2, 3, 4, 5, 6].map((i) => (
-                        <Skeleton key={i} className="h-40 w-full" />
+                        <Skeleton key={i} className="h-48 w-full rounded-2xl" />
                     ))}
                 </div>
             ) : filteredNotes?.length === 0 ? (
@@ -78,20 +78,20 @@ export const NoteGrid = () => {
                     title="No notes found"
                     description={
                         searchQuery
-                            ? "No notes matched your search query."
+                            ? "No notes matched your search query. Try a different term."
                             : selectedFolderId
                                 ? "This folder is empty. Create a new note to get started."
                                 : "You don't have any notes yet. Create one to get started."
                     }
                     action={
-                        <Button onClick={handleCreateNew}>
+                        <Button onClick={handleCreateNew} className="shadow-sm">
                             <Plus className="mr-2 h-4 w-4" />
                             New Note
                         </Button>
                     }
                 />
             ) : (
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                     {filteredNotes?.map((note) => (
                         <NoteCard
                             key={note.id}
@@ -105,7 +105,7 @@ export const NoteGrid = () => {
 
             {/* Floating action button for mobile */}
             <Button
-                className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg sm:hidden"
+                className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg sm:hidden flex items-center justify-center p-0"
                 onClick={handleCreateNew}
             >
                 <Plus className="h-6 w-6" />

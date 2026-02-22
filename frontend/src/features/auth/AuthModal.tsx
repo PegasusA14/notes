@@ -1,128 +1,120 @@
 import { useState } from 'react';
+import { useAuthStore } from '../../store/authStore';
+import { useUiStore } from '../../store/uiStore';
 import { Modal } from '../../components/ui/Modal';
 import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
-import { useUiStore } from '../../store/uiStore';
-import { useLoginMutation, useRegisterMutation } from './api';
+import { Mail, Lock, User } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { apiClient } from '../../api/client';
+import type { AuthResponseDto } from '../../api/types';
 
 export const AuthModal = () => {
     const { isLoginModalOpen, setLoginModalOpen } = useUiStore();
-    const [view, setView] = useState<'login' | 'register'>('login');
+    const { login } = useAuthStore();
 
+    const [isLoginView, setIsLoginView] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const loginMutation = useLoginMutation();
-    const registerMutation = useRegisterMutation();
-
-    const isRegister = view === 'register';
-
-    const resetForm = () => {
-        setName('');
-        setEmail('');
-        setPassword('');
-    };
-
     const handleClose = (open: boolean) => {
-        setLoginModalOpen(open);
-        if (!open) {
-            setTimeout(() => setView('login'), 200);
-            resetForm();
+        // If user is not authenticated, we prevent closing the modal via generic means
+        // but the Modal component's onOpenChange handles overlay clicks.
+        // For a strict app we could simply refuse to close unless token exists.
+        const token = useAuthStore.getState().token;
+        if (token) {
+            setLoginModalOpen(open);
         }
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (isRegister) {
-            registerMutation.mutate(
-                { name, email, password },
-                {
-                    onSuccess: () => {
-                        toast.success('Registration successful. Please log in.');
-                        setView('login');
-                        setPassword('');
-                    },
-                    onError: (err: any) => {
-                        toast.error(err.response?.data?.message || 'Failed to register');
-                    },
-                }
-            );
-        } else {
-            loginMutation.mutate(
-                { email, password },
-                {
-                    onSuccess: () => {
-                        setLoginModalOpen(false);
-                        resetForm();
-                        toast.success('Logged in successfully');
-                    },
-                    onError: (err: any) => {
-                        toast.error(err.response?.data?.message || 'Invalid credentials');
-                    },
-                }
-            );
+        setIsLoading(true);
+        try {
+            if (isLoginView) {
+                const { data } = await apiClient.post<AuthResponseDto>('/auth/login', { email, password });
+                login(data.token, { name: data.name, email: data.email });
+                toast.success('Successfully logged in');
+            } else {
+                const { data } = await apiClient.post<AuthResponseDto>('/auth/register', { name, email, password });
+                login(data.token, { name: data.name, email: data.email });
+                toast.success('Account created successfully');
+            }
+            setLoginModalOpen(false);
+            setName('');
+            setEmail('');
+            setPassword('');
+            setIsLoginView(true);
+        } catch (err: any) {
+            toast.error(err.response?.data || 'Authentication failed');
+        } finally {
+            setIsLoading(false);
         }
     };
 
     const toggleView = () => {
-        setView(isRegister ? 'login' : 'register');
-        resetForm();
+        setIsLoginView(!isLoginView);
+        setName('');
+        setEmail('');
+        setPassword('');
     };
 
     return (
         <Modal
             isOpen={isLoginModalOpen}
             onOpenChange={handleClose}
-            title={isRegister ? 'Create an account' : 'Welcome back'}
-            description={isRegister ? 'Enter your details to register.' : 'Enter your credentials to login.'}
+            title={isLoginView ? 'Welcome Back' : 'Create an Account'}
+            description={isLoginView ? 'Sign in to access your notes.' : 'Enter your details to get started.'}
         >
-            <form onSubmit={handleSubmit} className="space-y-4 pt-4">
-                {isRegister && (
+            <form onSubmit={handleSubmit} className="mt-6 flex flex-col space-y-5">
+                {!isLoginView && (
                     <Input
                         label="Name"
                         type="text"
+                        placeholder="John Doe"
                         required
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        placeholder="John Doe"
+                        icon={<User className="h-4 w-4" />}
                     />
                 )}
                 <Input
-                    label="Email"
+                    label="Email Address"
                     type="email"
+                    placeholder="your@email.com"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@example.com"
+                    icon={<Mail className="h-4 w-4" />}
                 />
                 <Input
                     label="Password"
                     type="password"
+                    placeholder="••••••••"
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    icon={<Lock className="h-4 w-4" />}
                 />
 
-                <Button
-                    type="submit"
-                    className="w-full"
-                    isLoading={loginMutation.isPending || registerMutation.isPending}
-                >
-                    {isRegister ? 'Register' : 'Log in'}
-                </Button>
+                <div className="pt-2">
+                    <Button type="submit" className="w-full shadow-sm" size="lg" isLoading={isLoading}>
+                        {isLoginView ? 'Sign In' : 'Create Account'}
+                    </Button>
+                </div>
 
-                <div className="text-center text-sm text-zinc-400 mt-4">
-                    {isRegister ? 'Already have an account?' : "Don't have an account?"}{' '}
+                <p className="text-center text-sm text-zinc-500 mt-4">
+                    {isLoginView ? "Don't have an account? " : "Already have an account? "}
                     <button
                         type="button"
+                        className="text-primary-600 hover:text-primary-700 font-semibold hover:underline"
                         onClick={toggleView}
-                        className="text-primary-400 hover:text-primary-300 font-medium hover:underline"
                     >
-                        {isRegister ? 'Log in' : 'Register'}
+                        {isLoginView ? 'Sign up' : 'Sign in'}
                     </button>
-                </div>
+                </p>
             </form>
         </Modal>
     );

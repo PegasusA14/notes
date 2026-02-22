@@ -2,15 +2,14 @@ import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { useAllNotesCount } from '../../features/notes/api';
 import { NoteGrid } from '../../features/notes/NoteGrid';
-import { useState } from 'react'; // Added useState import
+import { useState } from 'react';
 
 export const AppLayout = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
-
     const { data: totalNotesCount } = useAllNotesCount();
 
     return (
-        <div className="flex h-screen flex-col bg-zinc-950 text-zinc-50 overflow-hidden">
+        <div className="flex h-screen flex-col bg-zinc-50 text-zinc-900 overflow-hidden">
             <Header onMenuClick={() => setSidebarOpen(true)} />
 
             <div className="flex flex-1 overflow-hidden relative">

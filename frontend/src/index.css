@@ -1,29 +1,31 @@
 @import "tailwindcss";
 
 @theme {
-    --color-background: var(--color-zinc-950);
-    --color-foreground: var(--color-zinc-50);
-    --color-primary-50: var(--color-violet-50);
-    --color-primary-100: var(--color-violet-100);
-    --color-primary-200: var(--color-violet-200);
-    --color-primary-300: var(--color-violet-300);
-    --color-primary-400: var(--color-violet-400);
-    --color-primary-500: var(--color-violet-500);
-    --color-primary-600: var(--color-violet-600);
-    --color-primary-700: var(--color-violet-700);
-    --color-primary-800: var(--color-violet-800);
-    --color-primary-900: var(--color-violet-900);
-    --color-primary-950: var(--color-violet-950);
+    --color-background: var(--color-zinc-50);
+    --color-foreground: var(--color-zinc-950);
+
+    /* Primary Violet for light theme */
+    --color-primary-50: #f5f3ff;
+    --color-primary-100: #ede9fe;
+    --color-primary-200: #ddd6fe;
+    --color-primary-300: #c4b5fd;
+    --color-primary-400: #a78bfa;
+    --color-primary-500: #8b5cf6;
+    --color-primary-600: #7c3aed;
+    --color-primary-700: #6d28d9;
+    --color-primary-800: #5b21b6;
+    --color-primary-900: #4c1d95;
+    --color-primary-950: #2e1065;
 }
 
 @layer base {
     :root {
-        color-scheme: dark;
+        color-scheme: light;
     }
 
     body {
-        background-color: var(--color-zinc-950);
-        color: var(--color-zinc-50);
-        @apply antialiased min-h-screen text-zinc-50;
+        background-color: var(--color-zinc-50);
+        color: var(--color-zinc-950);
+        @apply antialiased min-h-screen text-zinc-950;
     }
 }
