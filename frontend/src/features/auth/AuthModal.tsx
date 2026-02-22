@@ -1,10 +1,17 @@
 import { useState } from 'react';
 import { useAuthStore } from '../../store/authStore';
 import { useUiStore } from '../../store/uiStore';
-import { Modal } from '../../components/ui/Modal';
-import { Input } from '../../components/ui/Input';
-import { Button } from '../../components/ui/Button';
-import { Mail, Lock, User } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
+import { Mail, Lock, User, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { apiClient } from '../../api/client';
 import type { AuthResponseDto } from '../../api/types';
@@ -62,60 +69,85 @@ export const AuthModal = () => {
     };
 
     return (
-        <Modal
-            isOpen={isLoginModalOpen}
-            onOpenChange={handleClose}
-            title={isLoginView ? 'Welcome Back' : 'Create an Account'}
-            description={isLoginView ? 'Sign in to access your notes.' : 'Enter your details to get started.'}
-        >
-            <form onSubmit={handleSubmit} className="mt-6 flex flex-col space-y-5">
-                {!isLoginView && (
-                    <Input
-                        label="Name"
-                        type="text"
-                        placeholder="John Doe"
-                        required
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        icon={<User className="h-4 w-4" />}
-                    />
-                )}
-                <Input
-                    label="Email Address"
-                    type="email"
-                    placeholder="your@email.com"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    icon={<Mail className="h-4 w-4" />}
-                />
-                <Input
-                    label="Password"
-                    type="password"
-                    placeholder="••••••••"
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    icon={<Lock className="h-4 w-4" />}
-                />
+        <Dialog open={isLoginModalOpen} onOpenChange={handleClose}>
+            <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                    <DialogTitle>{isLoginView ? 'Welcome Back' : 'Create an Account'}</DialogTitle>
+                    <DialogDescription>
+                        {isLoginView ? 'Sign in to access your notes.' : 'Enter your details to get started.'}
+                    </DialogDescription>
+                </DialogHeader>
 
-                <div className="pt-2">
-                    <Button type="submit" className="w-full shadow-sm" size="lg" isLoading={isLoading}>
-                        {isLoginView ? 'Sign In' : 'Create Account'}
-                    </Button>
-                </div>
+                <form onSubmit={handleSubmit} className="flex flex-col space-y-5">
+                    {!isLoginView && (
+                        <div className="space-y-2">
+                            <Label htmlFor="name">Name</Label>
+                            <div className="relative">
+                                <User className="absolute left-3 top-2.5 h-4 w-4 text-zinc-500" />
+                                <Input
+                                    id="name"
+                                    type="text"
+                                    placeholder="John Doe"
+                                    required
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    className="pl-9"
+                                />
+                            </div>
+                        </div>
+                    )}
 
-                <p className="text-center text-sm text-zinc-500 mt-4">
-                    {isLoginView ? "Don't have an account? " : "Already have an account? "}
-                    <button
-                        type="button"
-                        className="text-primary-600 hover:text-primary-700 font-semibold hover:underline"
-                        onClick={toggleView}
-                    >
-                        {isLoginView ? 'Sign up' : 'Sign in'}
-                    </button>
-                </p>
-            </form>
-        </Modal>
+                    <div className="space-y-2">
+                        <Label htmlFor="email">Email Address</Label>
+                        <div className="relative">
+                            <Mail className="absolute left-3 top-2.5 h-4 w-4 text-zinc-500" />
+                            <Input
+                                id="email"
+                                type="email"
+                                placeholder="your@email.com"
+                                required
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                className="pl-9"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="password">Password</Label>
+                        <div className="relative">
+                            <Lock className="absolute left-3 top-2.5 h-4 w-4 text-zinc-500" />
+                            <Input
+                                id="password"
+                                type="password"
+                                placeholder="••••••••"
+                                required
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="pl-9"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="pt-2">
+                        <Button type="submit" className="w-full shadow-sm" size="lg" disabled={isLoading}>
+                            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                            {isLoginView ? 'Sign In' : 'Create Account'}
+                        </Button>
+                    </div>
+
+                    <p className="text-center text-sm text-zinc-500 mt-4">
+                        {isLoginView ? "Don't have an account? " : "Already have an account? "}
+                        <button
+                            type="button"
+                            className="text-primary-600 hover:text-primary-700 font-semibold hover:underline"
+                            onClick={toggleView}
+                        >
+                            {isLoginView ? 'Sign up' : 'Sign in'}
+                        </button>
+                    </p>
+                </form>
+            </DialogContent>
+        </Dialog>
     );
 };

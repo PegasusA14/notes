@@ -1,8 +1,8 @@
 import { Search, LogOut, Menu } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
 import { useUiStore } from '../../store/uiStore';
-import { Input } from '../ui/Input';
-import { Button } from '../ui/Button';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { useState, useEffect } from 'react';
 
 export const Header = ({ onMenuClick }: { onMenuClick: () => void }) => {
@@ -40,11 +40,11 @@ export const Header = ({ onMenuClick }: { onMenuClick: () => void }) => {
 
             <div className="w-full max-w-md px-4 hidden md:block">
                 <div className="relative">
+                    <Search className="absolute left-3 top-3 h-4 w-4 text-zinc-500" />
                     <Input
                         type="text"
                         placeholder="Search notes..."
-                        icon={<Search className="h-4 w-4" />}
-                        className="rounded-full bg-zinc-50 h-10 border-zinc-200 shadow-inner"
+                        className="rounded-full bg-zinc-50 h-10 border-zinc-200 shadow-inner pl-9"
                         value={localQuery}
                         onChange={(e) => setLocalQuery(e.target.value)}
                     />
@@ -58,7 +58,7 @@ export const Header = ({ onMenuClick }: { onMenuClick: () => void }) => {
                             {user.name}
                         </span>
                         <div className="h-8 w-8 rounded-full bg-zinc-100 flex items-center justify-center border border-zinc-200 overflow-hidden hidden md:flex">
-                            <span className="text-xs font-bold text-zinc-600 uppercase">{user.name.charAt(0)}</span>
+                            <span className="text-xs font-bold text-zinc-600 uppercase">{user?.name ? user.name.charAt(0) : 'U'}</span>
                         </div>
                         <Button
                             variant="ghost"

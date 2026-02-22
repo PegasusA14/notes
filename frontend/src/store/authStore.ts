@@ -18,7 +18,13 @@ export const useAuthStore = create<AuthState>()(
         (set) => ({
             token: null,
             user: null,
-            login: (token, user) => set({ token, user }),
+            login: (token, user) => {
+                if (!token || !user?.name) {
+                    set({ token: null, user: null }); // Clear corrupted state
+                } else {
+                    set({ token, user });
+                }
+            },
             logout: () => set({ token: null, user: null }),
         }),
         {

@@ -40,7 +40,14 @@ public class AuthController : ControllerBase
         _db.Users.Add(user);
         await _db.SaveChangesAsync();
 
-        return Ok(new { message = "User created successfully" });
+        var token = _jwt.GenerateToken(user);
+
+        return Ok(new AuthResponseDto
+        {
+            Token = token,
+            Name = user.Name,
+            Email = user.Email
+        });
     }
 
     [HttpPost("login")]

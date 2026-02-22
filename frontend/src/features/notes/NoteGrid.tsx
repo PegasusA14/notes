@@ -5,9 +5,9 @@ import { useUiStore } from '../../store/uiStore';
 import { useFolders } from '../folders/api';
 import { NoteCard } from './NoteCard';
 import { NoteEditorModal } from './NoteEditorModal';
-import { Skeleton } from '../../components/ui/Skeleton';
+import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '../../components/ui/EmptyState';
-import { Button } from '../../components/ui/Button';
+import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '../../components/ui/ConfirmDialog';
 import type { NoteResponseDto } from '../../api/types';
 import toast from 'react-hot-toast';
@@ -61,7 +61,7 @@ export const NoteGrid = () => {
         <div className="flex flex-col space-y-6">
             <div className="flex items-center justify-between">
                 <h2 className="text-3xl font-extrabold tracking-tight text-zinc-900">{folderName}</h2>
-                <Button onClick={handleCreateNew} className="hidden sm:flex shadow-sm hover:shadow" variant="primary">
+                <Button onClick={handleCreateNew} className="hidden sm:flex shadow-sm hover:shadow" variant="default">
                     <Plus className="mr-2 h-4 w-4" />
                     New Note
                 </Button>

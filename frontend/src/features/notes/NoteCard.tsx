@@ -1,7 +1,7 @@
 import { formatDistanceToNow } from 'date-fns';
 import { Edit2, Folder, Trash2 } from 'lucide-react';
 import type { NoteResponseDto } from '../../api/types';
-import { Badge } from '../../components/ui/Badge';
+import { Badge } from '@/components/ui/badge';
 
 interface NoteCardProps {
     note: NoteResponseDto;

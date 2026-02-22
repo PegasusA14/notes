@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Folder, LayoutGrid, Plus, Trash2, X } from 'lucide-react';
 import { useFolders, useCreateFolder, useDeleteFolder } from '../../features/folders/api';
 import { useUiStore } from '../../store/uiStore';
-import { Badge } from '../ui/Badge';
+import { Badge } from '@/components/ui/badge';
 import { cn } from '../../lib/utils';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
 import toast from 'react-hot-toast';
